@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\User\PlaceController;
+use App\Http\Controllers\User\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/register',[AuthController::class, 'register']);
+Route::get('/login',[AuthController::class, 'login']);
+Route::get('/logout',[AuthController::class, 'logout']);
+
+Route::resource('/places', PlaceController::class);
