@@ -2,13 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Doctrine\Inflector\Rules\English\Rules;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
 
-use function Laravel\Prompts\password;
-
-class UserData extends FormRequest
+class LoginUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +22,9 @@ class UserData extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:150'],
-            'email' => ['required', 'string', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed',Password::defaults()],
+            "email" => ['required', 'string', 'email'],
+            "password" => ['required', 'string', 'min:6'],
+            
         ];
     }
 }

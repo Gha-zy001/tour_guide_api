@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\User\PlaceController;
 use App\Http\Controllers\User\AuthController;
+use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,8 +17,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/register',[AuthController::class, 'register']);
-Route::get('/login',[AuthController::class, 'login']);
-Route::get('/logout',[AuthController::class, 'logout']);
 
-Route::resource('/places', PlaceController::class);
+Route::prefix('user')->group(function () {
+  Route::post('/register', [AuthController::class, 'register']);
+  Route::post('/login', [AuthController::class, 'login']);
+  Route::post('/logout', [AuthController::class, 'logout']);
+
+  Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'place', 'controller' => PlaceController::class], function () {
+    //Routes
+  });
+});
+
