@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Trip extends Model
 {
-    protected $fillable = ['user_id', 'name', 'date', 'city'];
-    use HasFactory;
+  use HasFactory;
+    protected $fillable = [
+    'user_id',
+    'name',
+    'date',
+    'city'
+  ];
+
+  
 }
