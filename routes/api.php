@@ -26,5 +26,9 @@ Route::prefix('user')->group(function () {
   Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'place', 'controller' => PlaceController::class], function () {
     //Routes
   });
+
+  Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'hotel', 'controller' => HotelController::class], function () {
+    //Routes
+  });
 });
 

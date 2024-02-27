@@ -22,11 +22,12 @@ class AuthController extends Controller
         return ApiTrait::errorMessage([],'Credentials do not match',401);
       }
 
-
       return ApiTrait::data([
         'user' => $user,
-        'token' => $user->createToken('Api Token of '. $user->name)->plainTextToken
-      ]);
+        'token' => $user
+        ->createToken('Api Token of '. $user->name)
+        ->plainTextToken
+      ],200);
     }
 
     public function register(UserData $request){
@@ -39,13 +40,15 @@ class AuthController extends Controller
 
       return ApiTrait::data([
         'user' => $user,
-        'token' => $user->createToken('Api Token of'. $user->name)
+        'token' => $user
+        ->createToken('Api Token of'. $user->name)
         ->plainTextToken
       ],"Done",200);
     }
 
     public function logout(LoginUserRequest $request){
-      $user = User::where('email', $request->email)->first();
+      $user = User::where('email', $request->email)
+      ->first();
       if($user){
         $user->tokens()->delete();
       }
