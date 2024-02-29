@@ -8,12 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Trip extends Model
 {
   use HasFactory;
-    protected $fillable = [
+  protected $fillable = [
     'user_id',
     'name',
     'date',
     'city'
   ];
 
-  
+  public function user()
+  {
+    return $this->belongsTo(User::class, 'user_id');
+  }
 }

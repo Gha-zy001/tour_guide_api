@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('places', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('state_id')->references('id')->on('states')->onDelete('cascade');
             $table->string('name');
             $table->longText('description');
             $table->string('address');

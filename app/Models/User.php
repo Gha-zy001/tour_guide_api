@@ -52,4 +52,9 @@ class User extends Authenticatable
   {
     return $this->belongsToMany(Place::class, 'favorites');
   }
+
+  public function trips()
+  {
+    return $this->hasMany(Trip::class);
+  }
 }

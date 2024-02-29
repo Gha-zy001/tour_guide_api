@@ -7,5 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class State extends Model
 {
-    use HasFactory;
+  use HasFactory;
+  protected $fillable = [
+    'name',
+    'description',
+  ];
+
+  public function place()
+  {
+    return $this->hasMany(Place::class);
+  }
 }

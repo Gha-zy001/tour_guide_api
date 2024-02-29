@@ -11,6 +11,7 @@ class Place extends Model
 
   protected $fillable = [
     'name',
+    'state_id',
     'description',
     'address'
   ];
@@ -28,5 +29,10 @@ class Place extends Model
   public function pictures()
   {
     return $this->hasMany(Picture::class);
+  }
+
+  public function state()
+  {
+    return $this->belongsTo(State::class, 'state_id');
   }
 }

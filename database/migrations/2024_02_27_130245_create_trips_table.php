@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->string('name');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');            $table->string('name');
             $table->date('date');
             $table->string('city');
             $table->timestamps();
