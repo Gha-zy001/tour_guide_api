@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PlaceResource;
 use Illuminate\Http\Request;
+use App\Models\Place;
 
 class PlaceController extends Controller
 {
@@ -12,7 +14,8 @@ class PlaceController extends Controller
      */
     public function index()
     {
-        //
+      $places = Place::all();
+        return PlaceResource::collection($places);
     }
 
     /**

@@ -11,10 +11,11 @@ class State extends Model
   protected $fillable = [
     'name',
     'description',
+    'place_id',
   ];
 
   public function place()
   {
-    return $this->hasMany(Place::class);
+    return $this->hasMany(Place::class, 'place_id');
   }
 }

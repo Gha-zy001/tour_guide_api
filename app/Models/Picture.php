@@ -10,17 +10,15 @@ class Picture extends Model
   use HasFactory;
   protected $fillable = [
     'data',
-    'place_id',
-    'hotel_id',
   ];
 
-  public function place()
-  {
-    return $this->belongsTo(Place::class, 'place_id');
-  }
+  // public function place()
+  // {
+  //   return $this->hasMany(Place::class, 'place_id');
+  // }
 
-  public function hotel()
-  {
-    return $this->belongsTo(Hotel::class, 'hotel_id');
-  }
+  // public function hotel()
+  // {
+  //   return $this->hasMany(Hotel::class, 'hotel_id');
+  // }
 }
