@@ -16,10 +16,6 @@ class Hotel extends Model
     'price',
   ];
 
-  public function reviews()
-  {
-    return $this->hasMany(Review::class);
-  }
 
   public function favoritedBy()
   {
