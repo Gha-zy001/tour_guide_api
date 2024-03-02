@@ -16,7 +16,7 @@ class PlaceCotroller extends Controller
   public function index()
   {
     try {
-      $places = Place::with('images')->get();
+      $places = Place::all();
       if (count($places) > 0) {
         return PlaceResource::collection($places);
       }
