@@ -13,7 +13,6 @@ return new class extends Migration
   {
     Schema::create('places', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('photo_id')->constrained('photos')->onDelete('cascade');
       $table->foreignId('state_id')->constrained('states')->onDelete('cascade');
       $table->string('name');
       $table->longText('description');

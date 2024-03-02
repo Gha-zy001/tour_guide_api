@@ -1,9 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\User\PlaceController;
-use App\Http\Controllers\User\AuthController;
-use App\Models\Place;
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,17 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::prefix('user')->group(function () {
-  Route::post('/register', [AuthController::class, 'register']);
-  Route::post('/login', [AuthController::class, 'login']);
-  Route::post('/logout', [AuthController::class, 'logout']);
-
-  Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'place', 'controller' => PlaceController::class], function () {
-    //Routes
-  });
-
-  Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'hotel', 'controller' => HotelController::class], function () {
-    //Routes
-  });
-});
-
+require_once __DIR__ . '/admin.php';
+require_once __DIR__ . '/user.php';

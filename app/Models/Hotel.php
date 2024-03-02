@@ -11,7 +11,7 @@ class Hotel extends Model
 
   protected $fillable = [
     'name',
-    'photo_id',
+    'hotel_id',
     'address',
     'price',
   ];
@@ -25,8 +25,8 @@ class Hotel extends Model
   {
     return $this->belongsToMany(User::class, 'favorites');
   }
-
-  public function photo() {
-    return $this->belongsTo(Picture::class, 'photo_id');
-}
+  public function images()
+  {
+      return $this->hasMany(Image::class, 'hotel_id');
+  }
 }

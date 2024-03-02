@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api\User;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PlaceResource;
 use Illuminate\Http\Request;
 use App\Models\Place;
+use App\Http\Resources\PlaceResource;
 use App\Traits\ApiTrait;
 
-class PlaceController extends Controller
+class PlaceCotroller extends Controller
 {
   /**
    * Display a listing of the resource.
@@ -26,6 +26,22 @@ class PlaceController extends Controller
   }
 
   /**
+   * Show the form for creating a new resource.
+   */
+  public function create()
+  {
+    //
+  }
+
+  /**
+   * Store a newly created resource in storage.
+   */
+  public function store(Request $request)
+  {
+    //
+  }
+
+  /**
    * Display the specified resource.
    */
   public function show($place)
@@ -38,5 +54,29 @@ class PlaceController extends Controller
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], 'No Places Yet', 422);
     }
+  }
+
+  /**
+   * Show the form for editing the specified resource.
+   */
+  public function edit(string $id)
+  {
+    //
+  }
+
+  /**
+   * Update the specified resource in storage.
+   */
+  public function update(Request $request, string $id)
+  {
+    //
+  }
+
+  /**
+   * Remove the specified resource from storage.
+   */
+  public function destroy(string $id)
+  {
+    //
   }
 }
