@@ -17,6 +17,8 @@ return new class extends Migration
       $table->string('name');
       $table->longText('description');
       $table->string('address');
+      $table->tinyInteger('rating')->nullable();
+      $table->text('comment')->nullable();
       $table->timestamps();
     });
   }
