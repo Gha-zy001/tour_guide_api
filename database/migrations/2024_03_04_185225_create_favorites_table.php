@@ -14,8 +14,7 @@ return new class extends Migration
     Schema::create('favorites', function (Blueprint $table) {
       $table->id();
       $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-      $table->foreignId('place_id')->references('id')->on('places')->onDelete('cascade');
-      $table->foreignId('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
+      $table->morphs('favoritable');
       $table->timestamps();
     });
   }

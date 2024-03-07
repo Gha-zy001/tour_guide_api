@@ -17,19 +17,23 @@ class Place extends Model
     'address'
   ];
 
-
-  public function favoritedBy()
+  public function favorites()
   {
-    return $this->belongsToMany(User::class, 'favorites');
+    return $this->morphMany(Favorite::class, 'favoritable');
   }
 
   public function images()
-{
+  {
     return $this->hasMany(Image::class, 'place_id');
-}
+  }
 
   public function state()
   {
     return $this->belongsTo(State::class, 'state_id');
+  }
+
+  public function reviews()
+  {
+    return $this->morphMany(Review::class, 'reviewable');
   }
 }
