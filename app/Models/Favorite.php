@@ -7,27 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Favorite extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $table = 'favorites';
-    protected $fillable = [
-      'user_id',
-      'place_id',
-      'hotel_id',
-    ];
+  protected $table = 'favorites';
+  protected $fillable = [
+    'user_id',
+    'favoritable_id',
+    'favoritable_type',
+  ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+  public function user()
+  {
+    return $this->belongsTo(User::class, 'user_id');
+  }
 
-    public function place()
-    {
-        return $this->belongsTo(Place::class, 'place_id');
-    }
-
-    public function hotel()
-    {
-        return $this->belongsTo(Hotel::class, 'hotel_id');
-    }
+  public function favoritable()
+  {
+    return $this->morphTo();
+  }
 }

@@ -44,13 +44,23 @@ class User extends Authenticatable
   ];
 
 
-  public function favourites()
+  public function favorites()
   {
-    return $this->belongsToMany(Place::class, 'favorites');
+    return $this->hasMany(Favorite::class);
   }
 
   public function trips()
   {
     return $this->hasMany(Trip::class);
+  }
+
+  public function places()
+  {
+    return $this->morphedByMany(Place::class, 'favoritable', 'favorites');
+  }
+
+  public function hotels()
+  {
+    return $this->morphedByMany(Hotel::class, 'favoritable', 'favorites');
   }
 }

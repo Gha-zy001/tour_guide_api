@@ -21,7 +21,8 @@ class PlaceResource extends JsonResource
       'name' => $this->name,
       'description' => $this->description,
       'address' => $this->address,
-      'img_url' => $this->images->pluck('data','id'),
+      'img_url' => $this->images->pluck('data', 'id'),
+      'average_rating' => $this->reviews->avg('star_rating'),
     ];
   }
 }
