@@ -4,15 +4,10 @@ use App\Http\Controllers\Api\User\ContactController;
 use App\Http\Controllers\Api\user\HotelController;
 use App\Http\Controllers\Api\User\PlaceController;
 use App\Http\Controllers\Api\User\TripController;
-use App\Http\Controllers\User\AuthController;
-use App\Models\Favorite;
-use App\Models\Place;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\User\FavoriteController;
 use App\Http\Controllers\Api\User\ReviewController;
-use App\Models\Review;
-
+use App\Http\Controllers\User\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
