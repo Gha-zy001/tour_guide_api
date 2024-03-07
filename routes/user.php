@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\User\PlaceController;
 use App\Http\Controllers\Api\User\TripController;
-// use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\User\AuthController;
 use App\Models\Favorite;
 use App\Models\Place;
