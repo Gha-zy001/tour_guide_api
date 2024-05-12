@@ -16,6 +16,7 @@ class Place extends Model
     'description',
     'address'
   ];
+  protected $with = ['images'];
 
   public function favorites()
   {

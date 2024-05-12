@@ -29,6 +29,7 @@ class UserData extends FormRequest
             'name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed',Password::defaults()],
+            'image' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ];
     }
 }

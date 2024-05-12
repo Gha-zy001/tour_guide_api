@@ -23,7 +23,7 @@ class ReviewRequest extends FormRequest
     {
         return [
           'star_rating' => 'required|integer|min:1|max:5',
-          'comments' => 'required|text',
+          'comments' => 'required|string|max:255',
         ];
     }
 }

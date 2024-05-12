@@ -27,6 +27,7 @@ class FavoriteController extends Controller
       } else {
         return ApiTrait::errorMessage([], 'Invalid favoritable type', 422);
       }
+
       Favorite::create([
         'user_id' => auth()->user()->id,
         'favoritable_id' => $favoritableId,
@@ -55,7 +56,7 @@ class FavoriteController extends Controller
     try {
       $result = Favorite::where('user_id', auth()->user()->id)
         ->get();
-          return FavoriteResource::collection($result);
+      return FavoriteResource::collection($result);
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], 'There is no favorites yet', 422);
     }

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,6 +23,7 @@ class User extends Authenticatable
     'name',
     'email',
     'password',
+    'image',
   ];
 
   /**
@@ -49,6 +52,11 @@ class User extends Authenticatable
     return $this->hasMany(Favorite::class);
   }
 
+  public function reviews()
+  {
+    return $this->hasMany(Review::class);
+  }
+
   public function trips()
   {
     return $this->hasMany(Trip::class);
@@ -63,4 +71,10 @@ class User extends Authenticatable
   {
     return $this->morphedByMany(Hotel::class, 'favoritable', 'favorites');
   }
+
+  // public function sendEmailResetNotification($token)
+  // {
+  //   $url = 'https://spa.test/reset-password?token=' . $token;
+  //   $this->notify(new ResetPasswordNotification($url));
+  // }
 }

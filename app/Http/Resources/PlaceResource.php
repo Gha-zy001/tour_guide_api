@@ -18,10 +18,11 @@ class PlaceResource extends JsonResource
   {
     return [
       'id' => $this->id,
+      'state_id' => $this->state->id,
       'name' => $this->name,
       'description' => $this->description,
       'address' => $this->address,
-      'img_url' => $this->images->pluck('data', 'id'),
+      'img_url' => $this->images->pluck('data'),
       'average_rating' => $this->reviews->avg('star_rating'),
     ];
   }

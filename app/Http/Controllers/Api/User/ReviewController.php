@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReviewRequest;
+use App\Http\Resources\ReviewResource;
 use Illuminate\Http\Request;
 use App\Models\Place;
 use App\Models\Hotel;
 use App\Models\Review;
+use App\Models\User;
 use App\Traits\ApiTrait;
+use Spatie\FlareClient\Api;
 
 class ReviewController extends Controller
 {
@@ -46,10 +49,57 @@ class ReviewController extends Controller
   {
     try {
       $place = Place::findOrFail($place_id);
-      $reviews = $place->reviews();
-      return ApiTrait::data($reviews, 200);
+      $reviews = $place->reviews()->get();
+      $avg_rating = [
+        'place rate' => $reviews->avg('star_rating')
+      ];
+      $groupedReviews = $reviews->groupBy('user_id');
+      $userReviews = $groupedReviews->map(function ($reviews, $userId) {
+        $userName = $reviews->first()->user->name;
+        $userReview = $reviews->map(function ($review) {
+          return [
+            'star_rating' => $review->star_rating,
+            'comments' => $review->comments,
+          ];
+        });
+        return [
+          'user_name' => $userName,
+          'user_reviews' => $userReview,
+        ];
+      });
+      $userReviews = $userReviews->values();
+      return ApiTrait::data(compact('avg_rating', 'userReviews'), 200);
     } catch (\Throwable $th) {
-      return ApiTrait::errorMessage([], 'Fail', 422);
+      return ApiTrait::errorMessage([], 'There is no Reviews Yet', 404);
+    }
+  }
+
+  public function getHotelReviews($hotel_id)
+  {
+    try {
+      $hotel = Hotel::findOrFail($hotel_id);
+      $reviews = $hotel->reviews()->get();
+      $avg_rating = [
+        'hotel rate' => $reviews->avg('star_rating')
+      ];
+      $groupedReviews = $reviews->groupBy('user_id');
+      $userReviews = $groupedReviews->map(function ($reviews, $userId) {
+        $userName = $reviews->first()->user->name;
+        $userReview = $reviews->map(function ($review) {
+          return [
+            'star_rating' => $review->star_rating,
+            'comments' => $review->comments,
+          ];
+        });
+        return [
+          'user_name' => $userName,
+          'user_reviews' => $userReview,
+        ];
+      });
+      $userReviews = $userReviews->values();
+      return ApiTrait::data(compact('avg_rating', 'userReviews'), 200);
+    } catch (\Throwable $th) {
+      return ApiTrait::errorMessage([], 'There is no Reviews Yet', 404);
     }
   }
 }

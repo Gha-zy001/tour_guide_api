@@ -14,7 +14,7 @@ class State extends Model
     'place_id',
   ];
 
-  public function place()
+  public function places()
   {
     return $this->hasMany(Place::class, 'place_id');
   }

@@ -17,7 +17,9 @@ class HotelResource extends JsonResource
         return [
           'name' => $this->name,
           'address' => $this->address,
-          'img_url' => $this->images->pluck('data','id'),
+          'img_url' => $this->images->pluck('data'),
+          'price' => $this->price,
+          'rate' => $this->rate,
         ];
     }
 }

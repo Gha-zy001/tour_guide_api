@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FavoriteResource extends JsonResource
+class ProfileResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,11 +15,9 @@ class FavoriteResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-          'id' =>$this->favoritable->id,
-          'name' => $this->favoritable->name,
-          'address' => $this->favoritable->address,
-          'type' => $this->favoritable_type,
-          'img_url' => $this->favoritable->images->pluck('data'),
+          'name' =>$this->name,
+          'email' =>$this->email,
+          'image' =>$this->image,
         ];
     }
 }
