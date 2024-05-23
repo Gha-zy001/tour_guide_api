@@ -15,7 +15,6 @@ class RecommendationController extends Controller
   public function recommendPlaces()
   {
     try {
-      $recommendHotels = Hotel::where('rate' , );
       $user = User::find(Auth::user()->id);
       $favoritePlaces = $user->favorites()
         ->where('favoritable_type', Place::class)
@@ -33,10 +32,12 @@ class RecommendationController extends Controller
 
         return ApiTrait::data(compact('recommendedData'), '', 200);
       } else {
-        return ApiTrait::data(compact('places'), '', 200);
+        $places = Place::all()->random(10);
+        $recommendedData = PlaceResource::collection($places);
+        return ApiTrait::data(compact('recommendedData'), '', 200);
       }
     } catch (\Throwable $th) {
-      return ApiTrait::errorMessage([], '', 500);
+      return ApiTrait::errorMessage([], '', 404);
     }
   }
 }
