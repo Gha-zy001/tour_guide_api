@@ -47,9 +47,6 @@ Route::prefix('user')->group(function () {
 
   Route::middleware('auth:sanctum')->get('/recommended', [RecommendationController::class, 'recommendPlaces']);
   Route::middleware('auth:sanctum')->get('/home', [HomeController::class, 'homeContent']);
-  Route::get('/search_hotels', [SearchController::class, 'searchHotels']);
-  Route::get('/search_places', [SearchController::class, 'searchPlace']);
-  // Route::get('/search', [SearchController::class, 'search']);
 
   //Place routes
   Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'place', 'controller' => PlaceController::class], function () {
@@ -80,13 +77,6 @@ Route::prefix('user')->group(function () {
     Route::post('/update-trip/{id}', 'updateTrip');
     Route::post('/delete-trip/{id}', 'deleteTrip');
   });
-
-  //contact routes
-  Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'contact', 'controller' => contactController::class], function () {
-    Route::get('/get-contact/{id}', 'getContact');
-    Route::get('/get-contacts', 'getContacts');
-  });
-
   //hotel routes
   Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'hotel', 'controller' => HoteelController::class], function () {
     Route::get('/get-hotel/{hotelId}', 'getHotel');
