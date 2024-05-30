@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
 
     require base_path('routes/console.php');
   }
-  protected $commands = [
-    ProcessHotelsCSV::class,
-  ];
+  // protected $commands = [
+  //   ProcessHotelsCSV::class,
+  // ];
 }

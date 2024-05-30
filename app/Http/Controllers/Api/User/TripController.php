@@ -7,8 +7,10 @@ use App\Http\Resources\TripResource as TripResource;
 use App\Models\Trip;
 use App\Traits\ApiTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
+use function PHPUnit\Framework\returnSelf;
 
 class TripController extends Controller
 {
@@ -32,19 +34,37 @@ class TripController extends Controller
         'name' => 'required|string|max:255|min:1',
         'date' => 'required|date',
         'city' => 'required|string|max:255|min:1',
+        'images.*' => 'required|mimes:jpg,jpeg,png,bmp|max:20000',
       ];
+
       $validation = Validator::make($request->all(), $rules);
 
       if ($validation->fails()) {
         return ApiTrait::errorMessage([$validation->messages()->all()], 'Invalid Inputs', 422);
       }
 
-      Trip::create([
+      $trip = Trip::create([
         'user_id' => auth()->user()->id,
         'name' => $request->name,
         'date' => $request->date,
         'city' => $request->city,
       ]);
+      if ($request->hasFile('images.*')) {
+        $files = $request->file('images.*');
+
+        foreach ($files as $file) {
+          $extension = $file->getClientOriginalExtension();
+          if (in_array($extension, ['jpg', 'jpeg', 'png', 'bmp'])) {
+            $path = $file->store('public/images');
+
+            // Store image path into db
+            $trip->images()->create([
+              'data' => $path,
+            ]);
+
+          }
+        }
+      }
       return ApiTrait::successMessage('Success', 200);
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], 'Something went wrong', 500);
@@ -107,6 +127,36 @@ class TripController extends Controller
       return ApiTrait::successMessage('Trip deleted', 200);
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], 'Something went wrong', 500);
+    }
+  }
+
+  public function store(Request $request, $tripId)
+  {
+    $request->validate([
+      'images' => 'required|mimes:jpg,jpeg,png,bmp|max:20000'
+    ]);
+    if (!$request->hasFile('images')) {
+      return response()->json(['upload_file_not_found'], 400);
+    }
+    $files = $request->file('fileName');
+    $trip = Trip::findOrFail($tripId);
+
+    if ($request->hasFile('images')) {
+      $files = $request->file('images');
+
+      foreach ($files as $file) {
+        $extension = $file->getClientOriginalExtension();
+        if (in_array($extension, ['jpg', 'jpeg', 'png', 'bmp'])) {
+          $path = $file->store('public/images');
+
+          // Store image path into db
+          $trip->images()->create([
+            'data' => $path,
+          ]);
+        } else {
+          return response()->json(['invalid_file_format'], 422);
+        }
+      }
     }
   }
 }

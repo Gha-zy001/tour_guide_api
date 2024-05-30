@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\User\TripController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\User\FavoriteController;
 use App\Http\Controllers\Api\User\HomeController;
+use App\Http\Controllers\Api\User\HoteelController;
+use App\Http\Controllers\Api\user\HotellController;
 use App\Http\Controllers\Api\User\ProfileUpdateController;
 use App\Http\Controllers\Api\User\RecommendationController;
 use App\Http\Controllers\Api\User\ReviewController;
@@ -36,6 +38,7 @@ Route::prefix('user')->group(function () {
   Route::middleware('auth:sanctum')->post('/edit_profile', [ProfileUpdateController::class, 'editProfile']);
   Route::middleware('auth:sanctum')->get('/show_profile', [ProfileUpdateController::class, 'show']);
 
+  // Route::get('/get-hotels', [HotellController::class, 'getHotel']);
   //Reset_Password
   Route::post('/forgot_password', [ForgetPasswordController::class, 'fogotPassword']);
   Route::put('/reset_password', [ResetPasswordController::class, 'reset']);
@@ -85,7 +88,7 @@ Route::prefix('user')->group(function () {
   });
 
   //hotel routes
-  Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'hotel', 'controller' => HotelController::class], function () {
+  Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'hotel', 'controller' => HoteelController::class], function () {
     Route::get('/get-hotel/{hotelId}', 'getHotel');
     Route::get('/get-hotels', 'getHotels');
     Route::get('/{stateName}', 'getHotelsByState');

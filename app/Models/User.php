@@ -46,6 +46,7 @@ class User extends Authenticatable
     'password' => 'hashed',
   ];
 
+  protected $appends = ['image_url'];
 
   public function favorites()
   {
@@ -70,6 +71,11 @@ class User extends Authenticatable
   public function hotels()
   {
     return $this->morphedByMany(Hotel::class, 'favoritable', 'favorites');
+  }
+
+  public function getImageUrlAttribute()
+  {
+    return env('APP_URL') . '/storage/images/' . $this->image;
   }
 
   // public function sendEmailResetNotification($token)

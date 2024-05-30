@@ -19,6 +19,7 @@ class TripResource extends JsonResource
             'name' => $this->name,
             'date' => $this->date,
             'city' => $this->city,
+            'images' => $this->images->pluck('data'),
         ];
     }
 }

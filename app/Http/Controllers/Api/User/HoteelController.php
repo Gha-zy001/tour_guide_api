@@ -1,30 +1,29 @@
 <?php
 
-namespace App\Http\Controllers\Api\user;
+namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\Hotel;
 use Illuminate\Http\Request;
+use App\Models\Hotel;
 use App\Traits\ApiTrait;
 use App\Http\Resources\HotelResource;
 use App\Models\State;
 
-class HotelController extends Controller
+class HoteelController extends Controller
 {
   public function getHotels()
   {
-    // try {
-    $hotels = Hotel::all();
-    return $hotels;
-    //   $hotels = Hotel::paginate(10);
-    //   if ($hotels->count() > 0) {
-    //     $allHotels = HotelResource::collection($hotels);
-    //     return ApiTrait::data(compact('allHotels'), 'Hotels Fetched Successfully', 200);
-    //   }
-    //   return ApiTrait::errorMessage([], 'No Hotels Yet', 404);
-    // } catch (\Throwable $th) {
-    //   return ApiTrait::errorMessage([], 'Something went wrong', 500);
-    // }
+    try {
+      $hotels = Hotel::all();
+      $hotels = Hotel::paginate(10);
+      if ($hotels->count() > 0) {
+        $allHotels = HotelResource::collection($hotels);
+        return ApiTrait::data(compact('allHotels'), 'Hotels Fetched Successfully', 200);
+      }
+      return ApiTrait::errorMessage([], 'No Hotels Yet', 404);
+    } catch (\Throwable $th) {
+      return ApiTrait::errorMessage([], 'Something went wrong', 500);
+    }
   }
 
   // get hotel by id

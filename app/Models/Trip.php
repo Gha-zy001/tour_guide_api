@@ -13,11 +13,18 @@ class Trip extends Model
     'user_id',
     'name',
     'date',
-    'city'
+    'city',
+    'trip_id'
   ];
-
+  protected $with = [
+    'images',
+  ];
   public function user()
   {
     return $this->belongsTo(User::class, 'user_id');
+  }
+  public function images()
+  {
+    return $this->hasMany(img_trip::class, 'trip_id');
   }
 }

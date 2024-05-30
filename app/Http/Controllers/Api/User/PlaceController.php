@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\HotelResource;
 use App\Http\Resources\PlaceResource;
+use App\Models\Hotel;
 use Illuminate\Http\Request;
 use App\Models\Place;
 use App\Traits\ApiTrait;
 use App\Models\State;
+use Illuminate\Support\Facades\Cache;
 
 class PlaceController extends Controller
 {
@@ -17,10 +20,21 @@ class PlaceController extends Controller
   public function index()
   {
     try {
-      $places = Place::paginate(10);
+      // $placesCacheKey = 'places.all';
+      // $hotelsCacheKey = 'hotels.all';
+      // $cacheDuration = 60; // 1 hour
+      // $places = Cache::remember($placesCacheKey, $cacheDuration, function () {
+      //   return Place::all();
+      // });
+      // $hotels = Cache::remember($hotelsCacheKey, $cacheDuration, function () {
+      //   return Hotel::all();
+      // });
+      $places = Place::paginate();
+      $hotels = Hotel::paginate();
       if (count($places) > 0) {
         $allPlaces = PlaceResource::collection($places);
-        return ApiTrait::data(compact('allPlaces'));
+        $allhotels = HotelResource::collection($hotels);
+        return ApiTrait::data(compact('allPlaces', 'allhotels'));
       }
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], 'No Places Yet', 422);
@@ -60,6 +74,4 @@ class PlaceController extends Controller
       return ApiTrait::errorMessage([], '', 422);
     }
   }
-
-  
 }
