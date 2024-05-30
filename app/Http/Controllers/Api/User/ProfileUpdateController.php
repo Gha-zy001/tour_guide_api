@@ -20,15 +20,20 @@ class ProfileUpdateController extends Controller
     try {
       $user = $request->user();
       $request->validated($request->all());
-      $imageName = time() . '.' . $request->file('image')->getClientOriginalExtension();
-      Gdrive::put("project/{$imageName}", $request->file('image'));
-      return response('Image Uploaded!', 200);
+
+      // return response('Image Uploaded!', 200);
       if ($request->hasFile('image')) {
-        Gdrive::put("{$imageName}", $request->file('image'));
+        $imageName = time() . '.' . $request->file('image')->getClientOriginalExtension();
+        Gdrive::put("project/{$imageName}", $request->file('image'));
+        $path = Gdrive::get("project/{$imageName}");
+        return response($path, 200);
+
+        // return $path;
+
         // $url = Storage::url($path);
         // return $url;
-        // $user->image = $url;
-        // $user->save();
+        $user->image = $path;
+        $user->save();
         // $request->file('image')->move(public_path('storage/images'), $imageName);
         // $img_url = asset('storage/images/' . $imageName);
         // $user->image = $imageName;
