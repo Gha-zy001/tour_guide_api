@@ -4,14 +4,11 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReviewRequest;
-use App\Http\Resources\ReviewResource;
-use Illuminate\Http\Request;
 use App\Models\Place;
 use App\Models\Hotel;
 use App\Models\Review;
-use App\Models\User;
 use App\Traits\ApiTrait;
-use Spatie\FlareClient\Api;
+
 
 class ReviewController extends Controller
 {

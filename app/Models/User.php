@@ -70,4 +70,9 @@ class User extends Authenticatable
     return $this->morphedByMany(Hotel::class, 'favoritable', 'favorites');
   }
 
+  public function getImageUrlAttribute()
+  {
+    return env('APP_URL') . '/storage/images/' . $this->image;
+  }
+
 }

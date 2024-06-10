@@ -7,10 +7,8 @@ use App\Http\Resources\TripResource as TripResource;
 use App\Models\Trip;
 use App\Traits\ApiTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
-use function PHPUnit\Framework\returnSelf;
+use Cloudinary\Api\Upload\UploadApi;
 
 class TripController extends Controller
 {
@@ -34,7 +32,6 @@ class TripController extends Controller
         'name' => 'required|string|max:255|min:1',
         'date' => 'required|date',
         'city' => 'required|string|max:255|min:1',
-        'images.*' => 'required|mimes:jpg,jpeg,png,bmp|max:20000',
       ];
 
       $validation = Validator::make($request->all(), $rules);
@@ -43,32 +40,58 @@ class TripController extends Controller
         return ApiTrait::errorMessage([$validation->messages()->all()], 'Invalid Inputs', 422);
       }
 
-      $trip = Trip::create([
+      Trip::create([
         'user_id' => auth()->user()->id,
         'name' => $request->name,
         'date' => $request->date,
         'city' => $request->city,
       ]);
-      if ($request->hasFile('images.*')) {
-        $files = $request->file('images.*');
 
-        foreach ($files as $file) {
-          $extension = $file->getClientOriginalExtension();
-          if (in_array($extension, ['jpg', 'jpeg', 'png', 'bmp'])) {
-            $path = $file->store('public/images');
-
-            // Store image path into db
-            $trip->images()->create([
-              'data' => $path,
-            ]);
-
-          }
-        }
-      }
       return ApiTrait::successMessage('Success', 200);
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], 'Something went wrong', 500);
     }
+  }
+
+
+  public function uploadImages(Request $request, $tripId)
+  {
+    $config = "CLOUDINARY_URL=cloudinary://215749298241811:gxhrmBq4FeJQnJI2UZbiHwpVSdU@dkduz7amh";
+
+    $request->validate([
+      'images.*' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+    ]);
+    $image_urls = [];
+    $trip = Trip::findOrFail($tripId);
+    $path = 'laravel-cloud/trips-image';
+    $files = $request->file('images');
+    if ($request->hasFile('images')) {
+      foreach ($files as $file) {
+        $file_name = time() . '.' . $file->getClientOriginalExtension();
+        $fileName = pathinfo($file_name, PATHINFO_FILENAME);
+        $publicId = date('Y-m-d_His') . '_' . $fileName;
+        $upload = (new UploadApi($config))->upload(
+          $file->getRealPath(),
+          [
+            "public_id" => $publicId,
+            "folder" => $path
+          ]
+        );
+        $image_urls[] = $upload['secure_url'];
+      }
+      foreach ($image_urls as $image_url) {
+        $trip->images()->create([
+          "trip_id" => $tripId,
+          "data" => $image_url,
+        ]);
+      }
+      return response()->json(['message' => 'Images uploaded successfully'], 200);
+    } else {
+      $imageName = 'null';
+      $trip->images()->data = $imageName;
+    }
+
+    return response()->json(['message' => 'No images uploaded'], 400);
   }
 
   function updateTrip(Request $request, $id)
@@ -127,36 +150,6 @@ class TripController extends Controller
       return ApiTrait::successMessage('Trip deleted', 200);
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], 'Something went wrong', 500);
-    }
-  }
-
-  public function store(Request $request, $tripId)
-  {
-    $request->validate([
-      'images' => 'required|mimes:jpg,jpeg,png,bmp|max:20000'
-    ]);
-    if (!$request->hasFile('images')) {
-      return response()->json(['upload_file_not_found'], 400);
-    }
-    $files = $request->file('fileName');
-    $trip = Trip::findOrFail($tripId);
-
-    if ($request->hasFile('images')) {
-      $files = $request->file('images');
-
-      foreach ($files as $file) {
-        $extension = $file->getClientOriginalExtension();
-        if (in_array($extension, ['jpg', 'jpeg', 'png', 'bmp'])) {
-          $path = $file->store('public/images');
-
-          // Store image path into db
-          $trip->images()->create([
-            'data' => $path,
-          ]);
-        } else {
-          return response()->json(['invalid_file_format'], 422);
-        }
-      }
     }
   }
 }

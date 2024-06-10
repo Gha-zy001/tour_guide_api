@@ -1,19 +1,14 @@
 <?php
 
-use App\Http\Controllers\Api\HotelController as ApiHotelController;
-use App\Http\Controllers\Api\User\ContactController;
-use App\Http\Controllers\Api\user\HotelController;
 use App\Http\Controllers\Api\User\PlaceController;
 use App\Http\Controllers\Api\User\TripController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\User\FavoriteController;
 use App\Http\Controllers\Api\User\HomeController;
 use App\Http\Controllers\Api\User\HoteelController;
-use App\Http\Controllers\Api\user\HotellController;
 use App\Http\Controllers\Api\User\ProfileUpdateController;
 use App\Http\Controllers\Api\User\RecommendationController;
 use App\Http\Controllers\Api\User\ReviewController;
-use App\Http\Controllers\Api\User\SearchController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\ForgetPasswordController;
 use App\Http\Controllers\User\ResetPasswordController;
@@ -37,6 +32,7 @@ Route::prefix('user')->group(function () {
   Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
   Route::middleware('auth:sanctum')->post('/edit_profile', [ProfileUpdateController::class, 'editProfile']);
   Route::middleware('auth:sanctum')->get('/show_profile', [ProfileUpdateController::class, 'show']);
+  Route::middleware('auth:sanctum')->post('/upload-images/{tripId}', [TripController::class, 'uploadImages']);
 
   // Route::get('/get-hotels', [HotellController::class, 'getHotel']);
   //Reset_Password
@@ -75,7 +71,9 @@ Route::prefix('user')->group(function () {
     Route::get('/get-trip', 'getTrip');
     Route::post('/create-trip', 'createTrip');
     Route::post('/update-trip/{id}', 'updateTrip');
+    // Route::post('/upload-images/{tripId}', 'uploadImages');
     Route::post('/delete-trip/{id}', 'deleteTrip');
+    // Route::post('/upload-images/{tripId}', 'uploadImages');
   });
   //hotel routes
   Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'hotel', 'controller' => HoteelController::class], function () {

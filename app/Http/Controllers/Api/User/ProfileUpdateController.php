@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Traits\ApiTrait;
 use Cloudinary\Api\Upload\UploadApi;
 
-
 class ProfileUpdateController extends Controller
 {
   public function editProfile(ProfileRequest $request)
@@ -28,8 +27,7 @@ class ProfileUpdateController extends Controller
             "folder" => $path
           ]
         );
-
-        $imagePath = "{$upload['secure_url']}";
+        $imagePath = $upload['secure_url'];
         $user->update([
           "image" => $imagePath,
         ]);
@@ -38,7 +36,7 @@ class ProfileUpdateController extends Controller
         $user->image = $imageName;
         $user->save();
       }
-      $user->update($request->all());
+      $user->update($request->except('image'));
 
       return ApiTrait::successMessage('Success', 200);
     } catch (\Throwable $th) {
