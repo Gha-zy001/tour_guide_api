@@ -32,9 +32,7 @@ Route::prefix('user')->group(function () {
   Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
   Route::middleware('auth:sanctum')->post('/edit_profile', [ProfileUpdateController::class, 'editProfile']);
   Route::middleware('auth:sanctum')->get('/show_profile', [ProfileUpdateController::class, 'show']);
-  Route::middleware('auth:sanctum')->post('/upload-images/{tripId}', [TripController::class, 'uploadImages']);
 
-  // Route::get('/get-hotels', [HotellController::class, 'getHotel']);
   //Reset_Password
   Route::post('/forgot_password', [ForgetPasswordController::class, 'fogotPassword']);
   Route::put('/reset_password', [ResetPasswordController::class, 'reset']);
@@ -49,7 +47,6 @@ Route::prefix('user')->group(function () {
     Route::get('/', 'index');
     Route::get('/show/{place}', 'show');
     Route::get('/{stateName}', 'getPlacesByState');
-    // Route::get('/search', 'search');
   });
 
   //Favorite routes
@@ -71,9 +68,9 @@ Route::prefix('user')->group(function () {
     Route::get('/get-trip', 'getTrip');
     Route::post('/create-trip', 'createTrip');
     Route::post('/update-trip/{id}', 'updateTrip');
-    // Route::post('/upload-images/{tripId}', 'uploadImages');
+    Route::post('/upload-images/{tripId}', 'uploadImages');
     Route::post('/delete-trip/{id}', 'deleteTrip');
-    // Route::post('/upload-images/{tripId}', 'uploadImages');
+    Route::get('/specific-trip/{tripId}', 'specificTrip');
   });
   //hotel routes
   Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'hotel', 'controller' => HoteelController::class], function () {

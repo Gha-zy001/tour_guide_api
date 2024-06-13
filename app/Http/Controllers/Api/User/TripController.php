@@ -25,6 +25,21 @@ class TripController extends Controller
     }
   }
 
+  public function specificTrip(Request $request, $tripId)
+  {
+
+    $specificTrip = Trip::where('user_id', auth()->user()->id)
+      ->where('id', $tripId);
+    try {
+      if ($specificTrip) {
+        $tripById = new TripResource($specificTrip);
+        return ApiTrait::data(compact('tripById'));
+      }
+    } catch (\Throwable $th) {
+      return ApiTrait::errorMessage([], 'No trips Yet', 422);
+    }
+  }
+
   function createTrip(Request $request)
   {
     try {
