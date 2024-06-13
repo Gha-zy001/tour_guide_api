@@ -1,7 +1,7 @@
 FROM richarvey/nginx-php-fpm:latest
 
 COPY . .
-COPY ./php.ini /usr/local/etc/php/
+COPY php.ini /usr/local/etc/php/php.ini
 
 # Image config
 ENV SKIP_COMPOSER 1
