@@ -4,3 +4,7 @@ tests/
 .github/
 .env
 node_modules/
+Dockerfile
+.dockerugnore
+/scripts
+/conf
