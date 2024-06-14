@@ -5,9 +5,7 @@ namespace App\Console;
 use App\Console\Commands\ProcessHotelsCSV;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use ProcessPlacesCSV as GlobalProcessPlacesCSV;
-use ProcessHotelsCSV as GlobalProcessHotelsCSV;
-
+use ProcessPlacesCSVs;
 
 class Kernel extends ConsoleKernel
 {
@@ -29,7 +27,7 @@ class Kernel extends ConsoleKernel
 
     require base_path('routes/console.php');
   }
-  // protected $commands = [
-  //   ProcessHotelsCSV::class,
-  // ];
+  protected $commands = [
+    ProcessPlacesCSVs::class,
+  ];
 }

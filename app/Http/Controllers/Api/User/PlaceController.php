@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\HotelResource;
 use App\Http\Resources\PlaceResource;
 use App\Models\Hotel;
-use Illuminate\Http\Request;
 use App\Models\Place;
 use App\Traits\ApiTrait;
 use App\Models\State;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class PlaceController extends Controller
 {
@@ -20,25 +20,31 @@ class PlaceController extends Controller
   public function index()
   {
     try {
-      // $placesCacheKey = 'places.all';
-      // $hotelsCacheKey = 'hotels.all';
-      // $cacheDuration = 60; // 1 hour
-      // $places = Cache::remember($placesCacheKey, $cacheDuration, function () {
-      //   return Place::all();
-      // });
-      // $hotels = Cache::remember($hotelsCacheKey, $cacheDuration, function () {
-      //   return Hotel::all();
-      // });
-      $places = Place::paginate();
-      $hotels = Hotel::paginate();
-      if (count($places) > 0) {
-        $allPlaces = PlaceResource::collection($places);
-        $allhotels = HotelResource::collection($hotels);
-        return ApiTrait::data(compact('allPlaces', 'allhotels'));
+      $cacheKey = 'places_hotels_index';
+
+      $cachedData = Cache::remember($cacheKey, now()->addMinutes(10), function () {
+          $places = Place::paginate();
+          $hotels = Hotel::paginate();
+
+          if (count($places) > 0) {
+              $allPlaces = PlaceResource::collection($places);
+              $allhotels = HotelResource::collection($hotels);
+              return compact('allPlaces', 'allhotels');
+          }
+
+          return null;
+      });
+
+      // Check if data was cached and returned successfully
+      if ($cachedData) {
+          return ApiTrait::data($cachedData);
       }
-    } catch (\Throwable $th) {
+
       return ApiTrait::errorMessage([], 'No Places Yet', 422);
-    }
+
+  } catch (\Throwable $th) {
+      return ApiTrait::errorMessage([], 'No Places Yet', 422);
+  }
   }
 
   /**
