@@ -14,12 +14,14 @@ class HotelResource extends JsonResource
    */
   public function toArray(Request $request): array
   {
+    $isFavorite = $request->user() ? $request->user()->favorites->contains($this->id) : false;
     return [
       'id' => $this->id,
       'name' => $this->name,
       'address' => $this->address,
       'img_url' => $this->images->pluck('data'),
       'price' => $this->price,
+      'status' => $isFavorite,
       'rate' => $this->rate,
     ];
   }

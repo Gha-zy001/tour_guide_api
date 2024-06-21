@@ -19,8 +19,4 @@ class State extends Model
     return $this->hasMany(Place::class, 'place_id');
   }
 
-  public function images()
-  {
-    return $this->hasMany(img_trip::class, 'trip_id');
-  }
 }
