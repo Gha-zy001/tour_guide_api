@@ -19,7 +19,6 @@ class FavoriteResource extends JsonResource
           'name' => $this->favoritable->name,
           'address' => $this->favoritable->address,
           'type' => $this->favoritable_type,
-          'status' => true,
           'img_url' => $this->favoritable->images->pluck('data'),
         ];
     }

@@ -16,6 +16,8 @@ class PlaceResource extends JsonResource
    */
   public function toArray(Request $request): array
   {
+    $isFavorite = $request->user() ? $request->user()->favorites->contains($this->id) : false;
+
     return [
       'id' => $this->id,
       'state_id' => $this->state->id,
@@ -23,6 +25,7 @@ class PlaceResource extends JsonResource
       'description' => $this->description,
       'address' => $this->address,
       'img_url' => $this->images->pluck('data'),
+      'status' => $isFavorite,
       'average_rating' => $this->reviews->avg('star_rating'),
     ];
   }

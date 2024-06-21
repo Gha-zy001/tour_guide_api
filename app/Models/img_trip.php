@@ -17,4 +17,9 @@ class img_trip extends Model
   {
     return $this->belongsTo(Trip::class,'trip_id');
   }
+  
+  public function state()
+  {
+    return $this->belongsTo(State::class,'trip_id');
+  }
 }
