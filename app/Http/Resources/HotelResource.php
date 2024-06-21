@@ -16,7 +16,7 @@ class HotelResource extends JsonResource
   public function toArray(Request $request): array
   {
     $isFavorite = $request->user()
-      ? $request->user()->favorites()->where('favorable_id', $this->id)->where('favorable_type', Hotel::class)->exists()
+      ? $request->user()->favorites()->where('favoritable_id', $this->id)->where('favoritable_type', Hotel::class)->exists()
       : false;
     return [
       'id' => $this->id,
