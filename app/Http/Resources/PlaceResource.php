@@ -16,8 +16,9 @@ class PlaceResource extends JsonResource
    */
   public function toArray(Request $request): array
   {
-    $isFavorite = $request->user() ? $request->user()->favorites->contains($this->id) : false;
-
+    $isFavorite = $request->user()
+      ? $request->user()->favorites()->where('favorable_id', $this->id)->where('favorable_type', Place::class)->exists()
+      : false;
     return [
       'id' => $this->id,
       'state_id' => $this->state->id,
