@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\User\HoteelController;
 use App\Http\Controllers\Api\User\ProfileUpdateController;
 use App\Http\Controllers\Api\User\RecommendationController;
 use App\Http\Controllers\Api\User\ReviewController;
+use App\Http\Controllers\BankController;
+use App\Http\Controllers\ResturauntController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\ForgetPasswordController;
 use App\Http\Controllers\User\ResetPasswordController;
@@ -77,5 +79,17 @@ Route::prefix('user')->group(function () {
     Route::get('/get-hotel/{hotelId}', 'getHotel');
     Route::get('/get-hotels', 'getHotels');
     Route::get('/{stateName}', 'getHotelsByState');
+  });
+
+  Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'bank', 'controller' => BankController::class], function () {
+    Route::get('/get-bank/{BankId}', 'getBank');
+    Route::get('/get-banks', 'getBanks');
+    Route::get('/{stateName}', 'getBanksByState');
+  });
+
+  Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'resturant', 'controller' => ResturauntController::class], function () {
+    Route::get('/get-resturant/{ResturantId}', 'getResturant');
+    Route::get('/get-resturants', 'getResturants');
+    Route::get('/{stateName}', 'getResturantsByState');
   });
 });

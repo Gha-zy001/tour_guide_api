@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->longText('image');
+        Schema::create('banks', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('state_id')->constrained('states')->onDelete('cascade');
+            $table->string('name');
+            $table->double('rate');
+            $table->longText('location');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('banks');
     }
 };
