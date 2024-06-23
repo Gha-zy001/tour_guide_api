@@ -22,7 +22,7 @@ class AuthController extends Controller
     }
     $token = $user->createToken('user')->plainTextToken;
     $user->token = $token;
-    return ApiTrait::data(compact('user'), __('auth.login_success'));
+    return compact(('user'), __('auth.login_success'));
   }
 
   public function register(UserData $request)

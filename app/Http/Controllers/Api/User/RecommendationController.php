@@ -9,6 +9,7 @@ use App\Http\Resources\PlaceResource;
 use App\Models\Hotel;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class RecommendationController extends Controller
 {
@@ -26,8 +27,8 @@ class RecommendationController extends Controller
 
         $recommendations = Place::where('state_id', $state->id)
           ->whereNotIn('id', $favoritePlaces->pluck('favoritable_id')->toArray())
-          ->limit(10)
-          ->get();
+          ->get()
+          ->random(10);
         $recommendedData = PlaceResource::collection($recommendations);
 
         return ApiTrait::data(compact('recommendedData'), '', 200);

@@ -56,7 +56,7 @@ class BankController extends Controller
         $banks = Bank::where('state_id', $state->id)
           ->get(['id', 'state_id', 'name', 'rate', 'location']);
 
-        $banksArray = $banks->map(function ($banks) {
+        $banksArray = $banks->map(function ($banks) use ($stateName) {
 
           return [
             'id' => $banks->id,
@@ -64,6 +64,7 @@ class BankController extends Controller
             'name' => $banks->name,
             'rate' => $banks->rate,
             'location' => $banks->location,
+            'address' => $stateName,
           ];
         })->toArray();
 
