@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Api\User;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\HotelResource;
 use App\Http\Resources\PlaceResource;
+use App\Models\Bank;
 use App\Models\Hotel;
 use App\Models\Place;
+use App\Models\Resturaunt;
 use App\Traits\ApiTrait;
 use App\Models\State;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class PlaceController extends Controller
 {
@@ -20,31 +21,41 @@ class PlaceController extends Controller
   public function index()
   {
     try {
-      $cacheKey = 'places_hotels_index';
+      $cacheKey = 'placesHotels.all';
+      Cache::rememberForever($cacheKey, function () {
+        $places = Place::all();
+        $hotels = Hotel::all();
+        if ($places->isNotEmpty() || $hotels->isNotEmpty()) {
+          $allPlaces = $places->map(function ($place) {
+            return [
+              'id' => $place->id,
+              'name' => $place->name,
+              'description' => $place->description,
+              'address' => $place->address,
+              'img_url' => $place->images->pluck('data'),
+            ];
+          });
+          $allHotels = $hotels->map(function ($hotels) {
+            return [
+              'id' => $hotels->id,
+              'name' => $hotels->name,
+              'address' => $hotels->address,
+              'img_url' => $hotels->images->pluck('data'),
+            ];
+          });
+          return compact('allPlaces', 'allHotels');
+        }
 
-      $cachedData = Cache::remember($cacheKey, now()->addMinutes(10), function () {
-          $places = Place::paginate();
-          $hotels = Hotel::paginate();
 
-          if (count($places) > 0) {
-              $allPlaces = PlaceResource::collection($places);
-              $allhotels = HotelResource::collection($hotels);
-              return compact('allPlaces', 'allhotels');
-          }
-
-          return null;
+        return null;
       });
+      return Cache::get('placesHotels.all');
 
-      // Check if data was cached and returned successfully
-      if ($cachedData) {
-          return ApiTrait::data($cachedData);
-      }
 
-      return ApiTrait::errorMessage([], 'No Places Yet', 422);
-
-  } catch (\Throwable $th) {
-      return ApiTrait::errorMessage([], 'No Places Yet', 422);
-  }
+      return ApiTrait::errorMessage([], 'No Places or Hotels Available', 422);
+    } catch (\Throwable $th) {
+      return ApiTrait::errorMessage([], 'An error occurred', 500);
+    }
   }
 
   /**
