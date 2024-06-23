@@ -7,6 +7,7 @@ use App\Models\Bank;
 use App\Models\State;
 use Illuminate\Http\Request;
 use App\Traits\ApiTrait;
+use Illuminate\Support\Facades\Cache;
 
 class BankController extends Controller
 {
@@ -44,15 +45,41 @@ class BankController extends Controller
   public function getBanksByState($stateName)
   {
     try {
-      $state = State::where('name', $stateName)->first();
-      $stateId = $state->id;
-      if (!$state) {
-        return response()->json(['error' => 'State not found'], 404);
-      }
+      $cacheKey = 'banks.state.' . $stateName;
 
-      $Banks = Bank::where('state_id', $stateId)->paginate(10);
-      $Banks = BankResource::collection($Banks);
-      return ApiTrait::data(compact('Banks'), '', 200);
+      $banks = Cache::rememberForever($cacheKey, function () use ($stateName) {
+        $state = State::where('name', $stateName)->first();
+        if (!$state) {
+          return response()->json(['error' => 'State not found'], 404);
+        }
+
+        $banks = Bank::where('state_id', $state->id)
+          ->get(['id', 'state_id', 'name', 'rate', 'location']);
+
+        $banksArray = $banks->map(function ($banks) {
+
+          return [
+            'id' => $banks->id,
+            'state_id' => $banks->state_id,
+            'name' => $banks->name,
+            'rate' => $banks->rate,
+            'location' => $banks->location,
+          ];
+        })->toArray();
+
+        return $banksArray;
+      });
+      $banks = Cache::get('banks.state.' . $stateName);
+      return compact('banks');
+      // $state = State::where('name', $stateName)->first();
+      // $stateId = $state->id;
+      // if (!$state) {
+      //   return response()->json(['error' => 'State not found'], 404);
+      // }
+
+      // $Banks = Bank::where('state_id', $stateId)->paginate(10);
+      // $Banks = BankResource::collection($Banks);
+      // return ApiTrait::data(compact('Banks'), '', 200);
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], '', 422);
     }

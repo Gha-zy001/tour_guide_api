@@ -34,7 +34,6 @@ Route::prefix('user')->group(function () {
   Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
   Route::middleware('auth:sanctum')->post('/edit_profile', [ProfileUpdateController::class, 'editProfile']);
   Route::middleware('auth:sanctum')->get('/show_profile', [ProfileUpdateController::class, 'show']);
-
   //Reset_Password
   Route::post('/forgot_password', [ForgetPasswordController::class, 'fogotPassword']);
   Route::put('/reset_password', [ResetPasswordController::class, 'reset']);

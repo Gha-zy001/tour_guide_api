@@ -7,10 +7,10 @@ use App\Http\Resources\HotelResource;
 use App\Http\Resources\PlaceResource;
 use App\Models\Bank;
 use App\Models\Hotel;
-use App\Models\Place;
-use App\Models\Resturaunt;
+use Illuminate\Http\Request;
 use App\Traits\ApiTrait;
 use App\Models\State;
+use App\Models\Place;
 use Illuminate\Support\Facades\Cache;
 
 class PlaceController extends Controller
@@ -74,19 +74,52 @@ class PlaceController extends Controller
     }
   }
 
-  public function getPlacesByState($stateName)
+  public function getPlacesByState(Request $request, $stateName)
   {
 
     try {
-      $state = State::where('name', $stateName)->first();
-      $stateId = $state->id;
-      if (!$state) {
-        return response()->json(['error' => 'State not found'], 404);
-      }
+      $cacheKey = 'places.state.' . $stateName;
 
-      $places = Place::where('state_id', $stateId)->paginate(10);
-      $places = PlaceResource::collection($places);
-      return ApiTrait::data(compact('places'));
+      $places = Cache::rememberForever($cacheKey, function () use ($stateName, $request) {
+        $state = State::where('name', $stateName)->first();
+        if (!$state) {
+          return response()->json(['error' => 'State not found'], 404);
+        }
+
+        $places = Place::where('state_id', $state->id)
+          ->with([
+            'images' => function ($query) {
+              $query->select('data', 'place_id');
+            }
+          ])
+          ->get(['id', 'state_id', 'name', 'description', 'address']);
+
+        $placesArray = $places->map(function ($place) use ($request){
+          
+          return [
+            'id' => $place->id,
+            'state_id' => $place->state_id,
+            'name' => $place->name,
+            'description' => $place->description,
+            'address' => $place->address,
+            'img_url' => $place->images->pluck('data')->toArray(),
+          ];
+        })->toArray();
+
+        return $placesArray;
+      });
+      $places = Cache::get('places.state.' . $stateName);      
+      return compact('places');
+
+      // $state = State::where('name', $stateName)->first();
+      // $stateId = $state->id;
+      // if (!$state) {
+      //   return response()->json(['error' => 'State not found'], 404);
+      // }
+
+      // $places = Place::where('state_id', $stateId)->paginate(10);
+      // $places = PlaceResource::collection($places);
+      // return ApiTrait::data(compact('places'));
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], '', 422);
     }

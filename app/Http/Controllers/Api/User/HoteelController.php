@@ -8,6 +8,7 @@ use App\Models\Hotel;
 use App\Traits\ApiTrait;
 use App\Http\Resources\HotelResource;
 use App\Models\State;
+use Illuminate\Support\Facades\Cache;
 
 class HoteelController extends Controller
 {
@@ -46,16 +47,49 @@ class HoteelController extends Controller
   public function getHotelsByState($stateName)
   {
     try {
-      $state = State::where('name', $stateName)->first();
-      $stateId = $state->id;
-      if (!$state) {
-        return response()->json(['error' => 'State not found'], 404);
-      }
+      $cacheKey = 'hotels.state.' . $stateName;
 
-      $hotels = Hotel::where('state_id', $stateId)->paginate(10);
-      // return $hotels;
-      $hotels = HotelResource::collection($hotels);
-      return ApiTrait::data(compact('hotels'), '', 200);
+      $hotels = Cache::rememberForever($cacheKey, function () use ($stateName) {
+        $state = State::where('name', $stateName)->first();
+        if (!$state) {
+          return response()->json(['error' => 'State not found'], 404);
+        }
+
+        $hotels = Hotel::where('state_id', $state->id)
+          ->with([
+            'images' => function ($query) {
+              $query->select('data', 'hotel_id');
+            }
+          ])
+          ->get(['id', 'state_id', 'name', 'rate', 'address', 'price']);
+
+        $hotelsArray = $hotels->map(function ($hotels) {
+
+          return [
+            'id' => $hotels->id,
+            'state_id' => $hotels->state_id,
+            'name' => $hotels->name,
+            'address' => $hotels->address,
+            'img_url' => $hotels->images->pluck('data')->toArray(),
+            'rate' => $hotels->rate,
+            'price' => $hotels->price,
+          ];
+        })->toArray();
+
+        return $hotelsArray;
+      });
+      $hotels = Cache::get('hotels.state.' . $stateName);
+      return compact('hotels');
+      // $state = State::where('name', $stateName)->first();
+      // $stateId = $state->id;
+      // if (!$state) {
+      //   return response()->json(['error' => 'State not found'], 404);
+      // }
+
+      // $hotels = Hotel::where('state_id', $stateId)->paginate(10);
+      // // return $hotels;
+      // $hotels = HotelResource::collection($hotels);
+      // return ApiTrait::data(compact('hotels'), '', 200);
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], '', 422);
     }
