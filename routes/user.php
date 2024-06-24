@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Guider\GuiderController;
 use App\Http\Controllers\Api\User\PlaceController;
 use App\Http\Controllers\Api\User\TripController;
 use Illuminate\Support\Facades\Route;
@@ -90,5 +91,10 @@ Route::prefix('user')->group(function () {
     Route::get('/get-resturant/{ResturantId}', 'getResturant');
     Route::get('/get-resturants', 'getResturants');
     Route::get('/{stateName}', 'getResturantsByState');
+  });
+
+  Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'guider_data', 'controller' => GuiderController::class], function () {
+    Route::get('/guider_all_data', 'guider_data');
+    Route::get('/guider_specific/{guider_id}', 'guider');
   });
 });

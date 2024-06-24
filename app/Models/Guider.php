@@ -20,6 +20,7 @@ class Guider extends Authenticatable
     'national_id',
     'is_verified',
     'verification_code',
+    'description',
   ];
 
   /**

@@ -21,7 +21,6 @@ return new class extends Migration
       $table->boolean('is_verified')->default(false);
       $table->string('verification_code')->nullable();
       $table->timestamps();
-      $table->timestamps();
     });
   }
 
