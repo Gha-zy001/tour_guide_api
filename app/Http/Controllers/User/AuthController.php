@@ -22,7 +22,11 @@ class AuthController extends Controller
     }
     $token = $user->createToken('user')->plainTextToken;
     $user->token = $token;
-    return compact('user', 'auth.login_success');
+    return response()->json([
+      'id' => $user['id'],
+      'token' => $token,
+      'message' => 'Login successful',
+    ], 200);
   }
 
   public function register(UserData $request)
