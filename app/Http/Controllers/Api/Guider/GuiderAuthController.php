@@ -38,10 +38,9 @@ class GuiderAuthController extends Controller
     ]);
 
     try {
-      // Send SMS with the verification code
       $this->twilioService->sendSms($guider->phone_number, 'Your OTP is ' . $verificationCode);
     } catch (\Exception $e) {
-      $guider->delete(); // Cleanup the created guider record if SMS sending fails
+      $guider->delete();
       return response()->json(['message' => 'Registration failed. Could not send OTP.'], 500);
     }
 
