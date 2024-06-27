@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\ApiTrait;
 use App\Models\Hotel;
+use Illuminate\Support\Facades\Cache;
 
 class FavoriteController extends Controller
 {
@@ -33,6 +34,9 @@ class FavoriteController extends Controller
         'favoritable_id' => $favoritableId,
         'favoritable_type' => get_class($favoritable),
       ]);
+      Cache::forget('favorites_' . auth()->user()->id);
+      $favorites = Favorite::where('user_id', auth()->user()->id)->get();
+      Cache::put('favorites_' . auth()->user()->id, $favorites, now()->addMinutes(30));
       return ApiTrait::successMessage('Successfully added to favorites', 200);
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], 'Fail', 422);
@@ -45,6 +49,9 @@ class FavoriteController extends Controller
       Favorite::where('user_id', auth()->user()->id)
         ->where('favoritable_id', $favoritableId)
         ->delete();
+      Cache::forget('favorites_' . auth()->user()->id);
+      $favorites = Favorite::where('user_id', auth()->user()->id)->get();
+      Cache::put('favorites_' . auth()->user()->id, $favorites, now()->addMinutes(30));
       return ApiTrait::successMessage('Successfully deleted', 200);
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], 'Fail', 422);
@@ -54,9 +61,14 @@ class FavoriteController extends Controller
   public function getFavorites()
   {
     try {
-      $result = Favorite::where('user_id', auth()->user()->id)
-        ->get();
-      return FavoriteResource::collection($result);
+      $userId = auth()->user()->id;
+
+      $favorites = Cache::remember('favorites_' . $userId, now()->addMinutes(30), function () use ($userId) {
+        return Favorite::where('user_id', $userId)->get();
+      });
+      // $result = Favorite::where('user_id', auth()->user()->id)
+      //   ->get();
+      return FavoriteResource::collection($favorites);
     } catch (\Throwable $th) {
       return ApiTrait::errorMessage([], 'There is no favorites yet', 422);
     }
