@@ -34,13 +34,17 @@ class GuiderAuthController extends Controller
       'national_id' => $request->national_id,
       'password' => Hash::make($request->password),
       'verification_code' => $verificationCode,
-      'description' =>$request->description,
+      'description' => $request->description,
     ]);
 
     try {
       $this->twilioService->sendSms($guider->phone_number, 'Your OTP is ' . $verificationCode);
     } catch (\Exception $e) {
-      $guider->delete();
+      $guider->is_verified = false;
+      if (strpos($e->getMessage(), 'unverified') !== false) {
+        $guider->save();
+        return response()->json(['message' => 'Registration successful, but your phone number is not verified.'], 201);
+      }
       return response()->json(['message' => 'Registration failed. Could not send OTP.'], 500);
     }
 
