@@ -14,7 +14,9 @@ class FavoriteResource extends JsonResource
    */
   public function toArray(Request $request): array
   {
-    $isFavorite = $request->user() ? $request->user()->favorites->contains($this->id) : false;
+    $isFavorite = $request->user()
+      ? $request->user()->favorites()->where('favoritable_id', $this->id)->exists()
+      : false;
     return [
       'id' => $this->id,
       'name' => $this->name,
