@@ -56,6 +56,8 @@ Route::prefix('user')->group(function () {
     Route::get('/getFavorites', 'getFavorites');
     Route::post('/add/{favoritableType}/{favoritableId}', 'addtoFavorites');
     Route::post('/delete/{favoritableId}', 'deleteFavorites');
+    Route::get('/places_fav', 'places_fav');
+    Route::get('/hotels_fav', 'hotels_fav');
   });
 
   //Review routes

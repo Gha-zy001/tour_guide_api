@@ -73,4 +73,35 @@ class FavoriteController extends Controller
       return ApiTrait::errorMessage([], 'There is no favorites yet', 422);
     }
   }
+
+  public function places_fav(Request $request)
+  {
+    try {
+      $userId = $request->user()->id;
+      $favorites = Place::whereHas('favorites', function ($query) use ($userId) {
+        $query->where('user_id', $userId)
+          ->where('favoritable_type', 'App\\Models\\Place');
+      })->with('favorites')->get();
+
+      return FavoriteResource::collection($favorites);
+    } catch (\Throwable $th) {
+      return ApiTrait::errorMessage([], 'There is no favorites yet', 422);
+    }
+  }
+
+
+  public function hotels_fav(Request $request)
+  {
+    try {
+      $userId = $request->user()->id;
+      $favorites = Hotel::whereHas('favorites', function ($query) use ($userId) {
+        $query->where('user_id', $userId)
+          ->where('favoritable_type', 'App\\Models\\Hotel');
+      })->with('favorites')->get();
+
+      return FavoriteResource::collection($favorites);
+    } catch (\Throwable $th) {
+      return ApiTrait::errorMessage([], 'There is no favorites yet', 422);
+    }
+  }
 }

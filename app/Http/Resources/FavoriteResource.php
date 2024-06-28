@@ -16,12 +16,11 @@ class FavoriteResource extends JsonResource
   {
     $isFavorite = $request->user() ? $request->user()->favorites->contains($this->id) : false;
     return [
-      'id' => $this->favoritable->id,
-      'name' => $this->favoritable->name,
-      'address' => $this->favoritable->address,
-      'type' => $this->favoritable_type,
+      'id' => $this->id,
+      'name' => $this->name,
+      'address' => $this->address,
       'status' => $isFavorite,
-      'img_url' => $this->favoritable->images->pluck('data'),
+      'img_url' => $this->images->pluck('data'),
     ];
   }
 }
