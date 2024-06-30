@@ -26,7 +26,7 @@ class RegisterGuiderRequest extends FormRequest
       'name' => 'required|string|max:255',
       'email' => 'required|string|email|max:255|unique:guiders',
       'phone_number' => 'required|string|max:20|unique:guiders',
-      'password' => ['required', 'confirmed', Password::defaults()],
+      'password' => ['required', Password::defaults()],
       'national_id' => 'required|string|max:255',
       'description'=> 'nullable|max:500',
     ];

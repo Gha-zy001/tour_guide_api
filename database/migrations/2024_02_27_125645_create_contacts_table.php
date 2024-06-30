@@ -15,8 +15,10 @@ return new class extends Migration
       $table->id();
       $table->string('name');
       $table->string('email');
-      $table->string('subject');
       $table->text('message');
+      $table->foreignId('guider_id')->constrained('guiders')->onDelete('cascade');
+      $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+      $table->boolean('is_approved')->default(false);
       $table->timestamps();
     });
   }

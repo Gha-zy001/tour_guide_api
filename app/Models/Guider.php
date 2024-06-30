@@ -21,6 +21,7 @@ class Guider extends Authenticatable
     'is_verified',
     'verification_code',
     'description',
+    'guider_id',
   ];
 
   /**
@@ -48,5 +49,9 @@ class Guider extends Authenticatable
   public function getNameAttribute($value)
   {
     return $this->is_verified ? $value . ' (Verified)' : $value;
+  }
+  public function contacts()
+  {
+    return $this->hasMany(Contact::class, 'guider_id');
   }
 }

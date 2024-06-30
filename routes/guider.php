@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ContactController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Guider\GuiderAuthController;
 
@@ -12,6 +13,7 @@ Route::prefix('guider')->group(function () {
   Route::post('/verify-otp', [GuiderAuthController::class, 'verifyOtp']);
 
   Route::middleware('auth:sanctum')->group(function () {
-      Route::post('/logout', [GuiderAuthController::class, 'logout']);
+    Route::post('/logout', [GuiderAuthController::class, 'logout']);
+    Route::get('/get_contact', [ContactController::class, 'getContactRequestsForGuider']);
   });
 });

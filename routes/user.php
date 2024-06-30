@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\Guider\GuiderController;
 use App\Http\Controllers\Api\User\PlaceController;
 use App\Http\Controllers\Api\User\TripController;
@@ -97,6 +98,12 @@ Route::prefix('user')->group(function () {
 
   Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'guider_data', 'controller' => GuiderController::class], function () {
     Route::get('/guider_all_data', 'guider_data');
+    Route::get('/guider_specific/{guider_id}', 'guider');
+  });
+
+
+  Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'contact', 'controller' => ContactController::class], function () {
+    Route::post('/contact_request/{guider_id}', 'createContactRequest');
     Route::get('/guider_specific/{guider_id}', 'guider');
   });
 });

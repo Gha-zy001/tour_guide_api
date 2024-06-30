@@ -21,6 +21,7 @@ class User extends Authenticatable
     'email',
     'password',
     'image',
+    'user_id'
   ];
 
   /**
@@ -44,7 +45,10 @@ class User extends Authenticatable
   ];
 
   protected $appends = ['image_url'];
-
+  public function contacts()
+  {
+    return $this->hasMany(Contact::class, 'user_id');
+  }
   public function favorites()
   {
     return $this->hasMany(Favorite::class);
@@ -74,5 +78,4 @@ class User extends Authenticatable
   {
     return env('APP_URL') . '/storage/images/' . $this->image;
   }
-
 }

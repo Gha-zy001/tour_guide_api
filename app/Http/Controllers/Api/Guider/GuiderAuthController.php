@@ -45,7 +45,6 @@ class GuiderAuthController extends Controller
         $guider->save();
         return response()->json(['message' => 'Registration successful, but your phone number is not verified.'], 201);
       }
-      return response()->json(['message' => 'Registration failed. Could not send OTP.'], 500);
     }
 
     return response()->json([

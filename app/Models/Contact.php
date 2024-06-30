@@ -11,7 +11,23 @@ class Contact extends Model
   protected $fillable = [
     'name',
     'email',
-    'subject',
-    'message'
+    'message',
+    'guider_id',
+    'user_id',
+    'is_approved',
   ];
+
+  protected $casts = [
+    'is_approved' => 'boolean',
+  ];
+
+  public function guider()
+  {
+    return $this->belongsTo(Guider::class);
+  }
+
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
 }
